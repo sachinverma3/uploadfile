@@ -1,0 +1,82 @@
+    onFileChanged(event, year) {
+
+        const file = event.target.files[0];
+        const uploadData = new FormData();
+        uploadData.append('myFile', file, file.name);
+        uploadData.append('year', year);
+        console.log(uploadData);
+        this._dashboardSer.uploadPaymentCsv(uploadData)
+            .subscribe((_res: any) => {
+
+                console.log(_res);
+            });
+    }
+	
+	
+	
+	 uploadPaymentCsv(file: any): Observable<any> {
+    return this.http.post<any>(this.rootUrl + '/CompanyPayment/ValidatePaymentCSV', file);
+  }
+  
+  ___________________________________
+     [HttpPost]
+        public IHttpActionResult ValidatePaymentCSV()
+        {
+            try
+            {
+                 
+
+
+                string filename = "";
+                var httpRequest = HttpContext.Current.Request;
+                string year = httpRequest.Form[0];
+
+                DateTime dt;
+                DateTime.TryParseExact(year, "yyyy", CultureInfo.InvariantCulture,
+                                      DateTimeStyles.None, out dt);
+
+                var PaymentList = db.app_payment.Where(x => x.value_date.Value.Year == dt.Year).ToList();
+
+
+                if (httpRequest.Files.Count > 0)
+                { 
+                    foreach (string file in httpRequest.Files)
+                    {
+                        var postedFile = httpRequest.Files[file];
+                        if (postedFile != null && postedFile.ContentLength > 0)
+                        {
+                            var ext = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf('.'));
+                            filename = Guid.NewGuid() + ext.ToLower();
+                            var filePath = HttpContext.Current.Server.MapPath("~/Content/Uploads/Users/" + filename);
+
+                            postedFile.SaveAs(filePath);
+
+
+                            List<object> li = new List<object>();
+
+                            //Read the contents of CSV file.  
+                            string csvData = File.ReadAllText(filePath);
+
+                            //Execute a loop over the rows.  
+                            foreach (string row in csvData.Split('\n'))
+                            {
+                                 
+                            }
+
+
+                        }
+                    }
+
+
+
+                    return Ok();
+                }
+                else { return Ok("Please upload image!"); }
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
+		
+		
