@@ -80,3 +80,23 @@
         }
 		
 		
+		
+		CREATE TABLE `app_payment` (
+  `enrollment_id` int(10) unsigned NOT NULL,
+  `value_date` date DEFAULT NULL,
+  `accounting_date` date NOT NULL,
+  `value` decimal(16,2) NOT NULL,
+  `sign` varchar(1) DEFAULT NULL,
+  `description` text NOT NULL,
+  `type` varchar(32) DEFAULT NULL,
+  `SCT` varchar(35) DEFAULT NULL,
+  `file` varchar(64) DEFAULT NULL,
+  `disclaimer` tinyint(1) NOT NULL DEFAULT '0',
+  `CRO` varchar(16) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  KEY `app_payment_app_enrollmentlatest_id_fk` (`enrollment_id`),
+  CONSTRAINT `app_payment_app_enrollmentlatest_id_fk` FOREIGN KEY (`enrollment_id`) REFERENCES `app_enrollment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+
+		
